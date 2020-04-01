@@ -1,7 +1,7 @@
 #help - все команды +
 #weather - погода +
 #viki - википедия
-#random - рандомное число
+#random - рандомное число +
 import config
 import telebot
 import random
@@ -23,7 +23,7 @@ bot = telebot.TeleBot(config.TOKEN)
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
-	bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>, тестовый бот Telegram.\nЧтобы узнать мои команды введите /help".format(message.from_user, bot.get_me()),
+	bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>, крутой бот от Антохи в Telegram.\nЧтобы узнать мои команды введите /help".format(message.from_user, bot.get_me()),
 		parse_mode='html')
 
 @bot.message_handler(commands=['help'])
@@ -31,8 +31,8 @@ def help(message):
 	bot.send_message(message.chat.id, "/help - все команды\n/weather - погода\n/viki - википедия\n/random - рандомное число")
 
 @bot.message_handler(commands=['random'])
-def random(message):
-	bot.send_message(message.chat.id, "Эта команда пока что не работает") 
+def randomm(message):
+	bot.send_message(message.chat.id, str(random.randint(0,100)))
 	#bot.send_message(message.chat.id, "Ведите начальное число") 
 	#a = message.text
 	#bot.send_message(message.chat.id, "Ведите конечное число") 
@@ -46,9 +46,9 @@ def random(message):
 def weather(message):
 	bot.send_message(message.chat.id, "Текущая температура: " + te + "\n" + text)
 
-@bot.message_handler(commands=['viki'])
-def viki(message):
-	bot.send_message(message.chat.id, "Эта команда пока что не работает")
+#@bot.message_handler(commands=['viki'])
+#def viki(message):
+#	bot.send_message(message.chat.id, "Эта команда пока что не работает")
 
 @bot.message_handler(content_types=['text'])
 def main(message):
