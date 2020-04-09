@@ -18,7 +18,7 @@ def welcome(message):
 
 @bot.message_handler(commands=['help'])
 def help(message):
-	bot.send_message(message.chat.id, "/help - все команды\n/weather - погода\n/random - рандомное число(от 0 до 100)")
+	bot.send_message(message.chat.id, "/help - все команды\n/weather - погода\n/random <начальное число> <конечное число> - рандомное число (пример: /random 1 100)")
 
 @bot.message_handler(commands=['random'])
 def randomm(message):
