@@ -9,16 +9,6 @@ from telebot import types
 import requests
 from bs4 import BeautifulSoup
 
-#weather
-r = requests.get('https://pogoda7.ru/prognoz/gorod140335-Belarus-Mahilyowskaya_Voblasts-Asipovichy/1days/full')
-html = r.text
-soup = BeautifulSoup(html, 'lxml')
-t = soup.find('div', class_="current_data")
-te = t.find('div', class_="grid precip").find('div', class_="temperature").text
-text1 = t.find('div', class_="grid precip").find('div', class_="cloud").text
-text2 = t.find('div', class_="grid precip").find('div', class_="precipitation").text
-text = text1 + " " + text2
-
 bot = telebot.TeleBot(config.TOKEN)
 
 @bot.message_handler(commands=['start'])
@@ -32,19 +22,31 @@ def help(message):
 
 @bot.message_handler(commands=['random'])
 def randomm(message):
-	bot.send_message(message.chat.id, str(random.randint(0,100)))
-	#bot.send_message(message.chat.id, "Ведите начальное число") 
-	#a = message.text
-	#bot.send_message(message.chat.id, "Ведите конечное число") 
-	#b = message.text
-	#int(a)
-	#int(b)
-	#import random
-	#bot.send_message(message.chat.id, str(random.randint(a,b)))
+	if message.text == '/random':
+		bot.send_message(message.chat.id, "Введике как в примере. Если не знаете как напишите /help")
+		exit(0)
+	a = message.text
+	first = ''
+	second = ''
+	for i in range(len(a)):
+		if a[i] == ' ':
+			first = a[i+1:]
+			break
+	for i in range(len(first)):
+		if first[i] == ' ':
+			second = int(first[i+1:])
+			first = int(first[:i])
+			break
+	bot.send_message(message.chat.id, random.randint(first,second))
 
 @bot.message_handler(commands=['weather'])
 def weather(message):
-	bot.send_message(message.chat.id, "Текущая температура: " + te + "\n" + text)
+	owm = pyowm.OWM('d2eedfc4b72765594709200c9b411d83')
+	observation = owm.weather_at_place('Asipovichy')
+	w = observation.get_weather()
+	a = w.get_temperature('celsius')['temp']
+	f = w.get_humidity()
+	bot.send_message(message.chat.id, "Текущая температура: " + str(round(a)) + " °C" + "\n" + "Влажность: " + str(f) + " %")
 
 #@bot.message_handler(commands=['viki'])
 #def viki(message):
