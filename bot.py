@@ -8,6 +8,7 @@ import random
 from telebot import types
 import requests
 from bs4 import BeautifulSoup
+import pyowm
 
 bot = telebot.TeleBot(config.TOKEN)
 
