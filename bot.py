@@ -52,12 +52,11 @@ def randomm(message):
 
 @bot.message_handler(commands=['weather'])
 def weather(message):
-	owm = pyowm.OWM('d2eedfc4b72765594709200c9b411d83')
-	observation = owm.weather_at_place('Asipovichy')
-	w = observation.get_weather()
-	a = w.get_temperature('celsius')['temp']
-	f = w.get_humidity()
-	bot.send_message(message.chat.id, "Текущая температура: " + str(round(a)) + " °C" + "\n" + "Влажность: " + str(f) + " %")
+	markup = types.InlineKeyboardMarkup(row_width=2)
+	item1 = types.InlineKeyboardButton("Осиповичи", callback_data='Asipovichy')
+	item2 = types.InlineKeyboardButton("Минск", callback_data='Minsk')
+	markup.add(item1, item2)
+	bot.send_message(message.chat.id, "Выберете город:", reply_markup=markup)
 
 l = []
 o = []
@@ -91,6 +90,22 @@ def main(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
 	try:
+		if call.message:
+			if call.data == 'Asipovichy' or 'Minsk':
+				owm = pyowm.OWM('d2eedfc4b72765594709200c9b411d83')
+				observation = owm.weather_at_place(str(call.data))
+				w = observation.get_weather()
+				a = w.get_temperature('celsius')['temp']
+				f = w.get_humidity()
+				if call.data == 'Asipovichy':
+					bot.send_message(call.message.chat.id, "В Осиповичах\n" + "Текущая температура: " + str(round(a)) + 
+						" °C" + "\n" + "Влажность: " + str(f) + " %", reply_markup=None)
+				elif call.data == 'Minsk':
+					bot.send_message(call.message.chat.id, "В Минске\n" + "Текущая температура: " + str(round(a)) + 
+						" °C" + "\n" + "Влажность: " + str(f) + " %", reply_markup=None)
+				bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Выберете город:",
+						reply_markup=None)
+				exit(0)
 		if call.message:
 			for i in range(len(l)):
 				if call.data == 'ZHdfhsr12v' + str(i):
